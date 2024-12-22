@@ -11,7 +11,7 @@
 4. 进入到你所设置的python环境中，安装相关的python环境。例如：
    1. conda activate home
    2. pip install -r requirements.txt
-5. (可选) 将.bat加入到你的环境变量中，这样就可以直接在windows中使用了。
+5. (可选) 将.bat加入到你的环境变量中，这样就可以直接在windows中使用了
 
 ## 开始使用
 ### 打开cmd
