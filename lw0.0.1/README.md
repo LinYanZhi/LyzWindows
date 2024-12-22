@@ -4,14 +4,16 @@
 2. 确保你是windows10操作系统和python环境3.10
 3. 进入到项目的cmd目录下，修改lw.bat文件：
    1. 将python路径修改为你的python路径
-   2. 将.py文件路径修改为你的.py路径：  你的路径\lw0.0.1\_main.py
+   2. 将.py文件路径修改为你的.py路径
    3. 别忘了最后还有一个 %*
+   4. ```cmd
+      python.exe解释器 _main.py脚本 %*
 4. 进入到你所设置的python环境中，安装相关的python环境。例如：
    1. conda activate home
    2. pip install -r requirements.txt
 5. (可选) 将.bat加入到你的环境变量中，这样就可以直接在windows中使用了。
 
-## 开始使用：
+## 开始使用
 ### 打开cmd
 1. 输入：
    lw ls
