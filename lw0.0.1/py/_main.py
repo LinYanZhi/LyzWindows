@@ -10,37 +10,41 @@ from move import move_window_to, move_window_by_num
 from _ import get_window_info_by_title
 
 # 接收参数
-"""
+command = """\
 查看
-lw list
-lw list all
+    lw list
+    lw list all
+    lw get 窗口标题
 宽高
-lw size <window_title> <size>
+    lw size 窗口标题 模板0~9
+    lw size 窗口标题 宽x高
 位置
-lw move <window_title> <num>
-lw move <window_title> <horizontal> <vertical>
+    lw move 窗口标题 模式1~9
+    lw move 窗口标题 horizontal vertical
 """
 
 refer = [
     ["1938", "1098", "full"],
     ["1920", "1080", "screen"],
     ["1770", "1000", "jetbrains"],
-    ["1663", "938", "chatglm"],
-    ["1550", "980", "jetbrains"],
-    ["1410", "809", "kuake,dingding"],
+    ["1663", "938", "智谱清言"],
+    ["1550", "980", "~"],
+    ["1410", "809", "夸克,钉钉"],
     ["1321", "940", "music"],
     ["1313", "750", "explorer"],
     ["1259", "770", "cmd"],
-    ["1080", "800", "wechat"],
+    ["1080", "800", "微信"],
 ]
 
 
 def main():
     print(sys.argv)
+    global command
 
     if len(sys.argv) < 2:
         print("用法： lw <命令> [选项]")
-        print("宽高：")
+        print(command)
+        print("参考：")
         # 格式化输出
         count = 0
         for i in refer:
@@ -145,7 +149,7 @@ def main():
         print("2.修改窗口大小    lw size <window_title> <size>   size: 宽x高|宽,高|0-9")
         print("3.移动窗口位置    lw move <window_title> <size>   size: x y|水平 垂直")
         print("4.获取具体窗口    lw get <window_title>")
-        print("5.帮助          lw help|h")
+        print("5.帮助           lw help|h")
         return
 
     else:
