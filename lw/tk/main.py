@@ -58,7 +58,6 @@ root.mainloop()
 
 r"""
 (home) D:\PyCharm_code\home\LyzWindows\lw\package>
-pyinstaller ..\tk\main.py -p D:\PyCharm_code\home\LyzWindows\lw
-pyinstaller --onefile --windowed ..\tk\main.py -p D:\PyCharm_code\home\LyzWindows
+pyinstaller --windowed ..\tk\main.py -p D:\PyCharm_code\home\LyzWindows\lw
 """
 

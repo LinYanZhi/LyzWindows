@@ -80,12 +80,14 @@ def page_controller(frame):
 
 # 事件：集合(restore, max, min, close, hide, show)
 def set_window(action):
-    # 根据 pid
-    if 'PID' not in g_data.main_top_select_row and True:
+    # 根据 hwnd
+    if 'hwnd' not in g_data.main_top_select_row and True:
         return
-    pid = g_data.main_top_select_row['PID']
-    my_windows = get_my_windows_use()
-    window = get_mw_by_pid(my_windows, pid)
+    hwnd = g_data.main_top_select_row['hwnd']
+    exclude_path = g_data.get_exclude_items()
+    my_windows = get_my_windows()
+    my_windows = exclude_by_items(my_windows, exclude_path)
+    window = get_mw_by_hwnd(my_windows, hwnd)
     if len(window) != 1:
         raise Exception(f'根据pid搜索，理应只找到一个，结果len={len(window)}，无法理解，程序退出。')
     window = window[0]
@@ -258,12 +260,14 @@ def set_window_size(text=None):
 
     width = int(g_object.main_bottom_window_width.get())
     height = int(g_object.main_bottom_window_height.get())
-    # 根据 pid
-    if 'PID' not in g_data.main_top_select_row:
+    # 根据 hwnd
+    if 'hwnd' not in g_data.main_top_select_row:
         return
-    pid = g_data.main_top_select_row['PID']
-    my_windows = get_my_windows_use()
-    window = get_mw_by_pid(my_windows, pid)
+    hwnd = g_data.main_top_select_row['hwnd']
+    exclude_path = g_data.get_exclude_items()
+    my_windows = get_my_windows()
+    my_windows = exclude_by_items(my_windows, exclude_path)
+    window = get_mw_by_hwnd(my_windows, hwnd)
     if len(window) != 1:
         raise Exception(f'根据pid搜索，理应只找到一个，结果len={len(window)}，无法理解，程序退出。')
     window = window[0]
@@ -280,10 +284,12 @@ def set_window_position():
         return
     x = int(g_object.main_bottom_window_x.get())
     y = int(g_object.main_bottom_window_y.get())
-    # 根据 pid
-    pid = g_data.main_top_select_row['PID']
-    my_windows = get_my_windows_use()
-    window = get_mw_by_pid(my_windows, pid)
+    # 根据 hwnd 和
+    hwnd = g_data.main_top_select_row['hwnd']
+    exclude_path = g_data.get_exclude_items()
+    my_windows = get_my_windows()
+    my_windows = exclude_by_items(my_windows, exclude_path)
+    window = get_mw_by_hwnd(my_windows, hwnd)
     if len(window) != 1:
         raise Exception(f'根据pid搜索，理应只找到一个，结果len={len(window)}，无法理解，程序退出。')
     window = window[0]

@@ -1,3 +1,5 @@
+import os.path
+import sys
 import tkinter as tk
 from tkinter import ttk
 
@@ -15,9 +17,10 @@ def init_frame(frame, root):
                        command=on_refresh_click)
     button.pack(side='left', padx=(0, 10), pady=1)  # 设置为右对齐，并在右侧添加内边距
     # 创建一个按钮，初始不置于顶层
-    top_button = tk.Button(temp_frame, text="置顶？", width=5)
+    top_button = tk.Button(temp_frame, text="↓", width=5)
     top_button.pack(side='right', padx=(0, 10))
     temp_frame.pack(fill='x')  # 使temp_frame填充水平空间
+    root.attributes('-topmost', g_data.is_on_top)
 
     # 按钮点击事件处理函数
     def toggle_top():
@@ -37,7 +40,9 @@ def init_frame(frame, root):
     top_button.config(command=toggle_top)
 
     # 获取数据
-    my_windows = get_my_windows_use()
+    exclude_path = g_data.get_exclude_items()
+    my_windows = get_my_windows()
+    my_windows = exclude_by_items(my_windows, exclude_path)
     for item in my_windows:
         g_data.main_top_table_data.append(item.to_list())
 
@@ -95,8 +100,8 @@ def on_cell_click(event):
         g_object.main_bottom_window_y.delete(0, tk.END)
         return
 
-    for i, item in enumerate(row_values):
-        print(i, item)
+    # for i, item in enumerate(row_values):
+    #     print(i, item)
 
     obj = {
         'PID': row_values[5],
@@ -132,7 +137,9 @@ def on_cell_click(event):
 def on_refresh_click():
     # 清空历史数据
     g_data.main_top_table_data = []
-    my_windows = get_my_windows_use()
+    exclude_path = g_data.get_exclude_items()
+    my_windows = get_my_windows()
+    my_windows = exclude_by_items(my_windows, exclude_path)
     for i, item in enumerate(my_windows):
         g_data.main_top_table_data.append([i + 1] + item.to_list())
     g_method.refresh_table_data(g_data.main_top_table_data)

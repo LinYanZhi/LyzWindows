@@ -181,4 +181,7 @@ class MyWindow:
             self.is_min
         ]
 
+
     pass
+
+

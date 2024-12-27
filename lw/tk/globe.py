@@ -5,12 +5,22 @@ from LyzWindows.lw.py.MyWindowUtils import *
 
 # 全局数据交互
 class Data:
+    # exclude
+    exclude_file_name = "exclude.json"
+
+    @staticmethod
+    def get_exclude_items():
+        import sys
+        dir_path = os.path.dirname(sys.argv[0])
+        exclude_path = os.path.join(dir_path, Data.exclude_file_name)
+        return exclude_path
+
     # main_top
     main_top_tabel_column_name = ['窗口名称', '启动程序', '窗口大小', '窗口位置', 'PID', 'hwnd', '路径', '焦点',
                                   '最大化', '最小化']
     main_top_table_data = []
     main_top_select_row = tuple()
-    is_on_top = False  # 是否置于顶层
+    is_on_top = True  # 是否置于顶层
     # main_middle
     main_middle_columns_name = ['名称', '大小', '位置', 'PID', 'hwnd', '程序', '路径', '焦点', '最大', '最小', ]
     main_middle_columns_dict = {_: '' for _ in main_middle_columns_name}
@@ -27,7 +37,6 @@ class Method:
     refresh_table_data = None  # 需要参数（新的table）
     # main_top -> main_middle
     update_main_middle_by_table = None  # 需要参数（新的select item）
-
 
     pass
 
