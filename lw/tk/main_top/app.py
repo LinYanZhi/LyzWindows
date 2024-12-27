@@ -15,9 +15,10 @@ def init_frame(frame, root):
                        command=on_refresh_click)
     button.pack(side='left', padx=(0, 10), pady=1)  # 设置为右对齐，并在右侧添加内边距
     # 创建一个按钮，初始不置于顶层
-    top_button = tk.Button(temp_frame, text="置顶？", width=5)
+    top_button = tk.Button(temp_frame, text="↓", width=5)
     top_button.pack(side='right', padx=(0, 10))
     temp_frame.pack(fill='x')  # 使temp_frame填充水平空间
+    root.attributes('-topmost', g_data.is_on_top)
 
     # 按钮点击事件处理函数
     def toggle_top():

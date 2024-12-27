@@ -76,6 +76,16 @@ def get_mw_by_pid(my_windows: list[MyWindow], pid: int):
     return result
 
 
+# 获取特定的窗口 根据句柄
+def get_mw_by_hwnd(my_windows: list[MyWindow], hwnd: int):
+    result = []
+    hwnd = int(hwnd)
+    for mw in my_windows:
+        if mw.hwnd == hwnd:
+            result.append(mw)
+    return result
+
+
 # 获取特定的窗口 根据启动程序
 def get_mw_by_exec(my_windows: list[MyWindow], exec: str):
     result = []

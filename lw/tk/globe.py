@@ -10,7 +10,7 @@ class Data:
                                   '最大化', '最小化']
     main_top_table_data = []
     main_top_select_row = tuple()
-    is_on_top = False  # 是否置于顶层
+    is_on_top = True  # 是否置于顶层
     # main_middle
     main_middle_columns_name = ['名称', '大小', '位置', 'PID', 'hwnd', '程序', '路径', '焦点', '最大', '最小', ]
     main_middle_columns_dict = {_: '' for _ in main_middle_columns_name}
