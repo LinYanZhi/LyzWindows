@@ -11,6 +11,7 @@ class Data:
     @staticmethod
     def get_exclude_items():
         import sys
+        import os
         dir_path = os.path.dirname(sys.argv[0])
         exclude_path = os.path.join(dir_path, Data.exclude_file_name)
         return exclude_path
@@ -21,6 +22,7 @@ class Data:
     main_top_table_data = []
     main_top_select_row = tuple()
     is_on_top = True  # 是否置于顶层
+    is_read_json = True  # 是否读取json
     # main_middle
     main_middle_columns_name = ['名称', '大小', '位置', 'PID', 'hwnd', '程序', '路径', '焦点', '最大', '最小', ]
     main_middle_columns_dict = {_: '' for _ in main_middle_columns_name}
@@ -43,6 +45,8 @@ class Method:
 
 # 全局对象交互
 class Object:
+    # main_top
+    main_top_is_read_json: tk.Button = None
     # main_bottom
     main_bottom_window_width: tk.Entry = None
     main_bottom_window_height: tk.Entry = None

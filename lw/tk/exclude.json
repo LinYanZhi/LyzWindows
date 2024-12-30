@@ -46,6 +46,29 @@
         "exec_path": "D:\\PixPin\\PixPin.exe",
         "size": null,
         "position": null
+    },
+    {
+        "title": "",
+        "exec_path": "D:\\CloudMusic\\cloudmusic.exe",
+        "size": null,
+        "position": null
+    },
+    {
+        "title": "",
+        "exec_path": "C:\\Windows\\System32\\cmd.exe",
+        "size": null,
+        "position": null
+    },
+    {
+        "title": "",
+        "exec_path": "C:\\Windows\\explorer.exe",
+        "size": [1, 1],
+        "position": [0, 0]
+    },
+    {
+        "title": "",
+        "exec_path": "D:\\DingDing\\main\\current_new\\DingTalk.exe",
+        "size": null,
+        "position": null
     }
-
 ]

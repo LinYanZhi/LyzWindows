@@ -19,6 +19,10 @@ def init_frame(frame, root):
     # 创建一个按钮，初始不置于顶层
     top_button = tk.Button(temp_frame, text="↓", width=5)
     top_button.pack(side='right', padx=(0, 10))
+    is_read_json = tk.Button(temp_frame, text="当前:读取json", font=css['font10'], relief='flat',
+                             command=set_is_read_json)
+    g_object.main_top_is_read_json = is_read_json
+    is_read_json.pack(side='right', padx=(0, 10), pady=1)  # 设置为右对齐，并在右侧添加内边距
     temp_frame.pack(fill='x')  # 使temp_frame填充水平空间
     root.attributes('-topmost', g_data.is_on_top)
 
@@ -154,3 +158,11 @@ def on_refresh_click():
     g_object.main_bottom_button_wh.config(bg='SystemButtonFace')
     g_object.main_bottom_button_xy.config(bg='SystemButtonFace')
     return
+
+
+def set_is_read_json():
+    g_data.is_read_json = not g_data.is_read_json
+    if g_data.is_read_json:
+        g_object.main_top_is_read_json.config(text='当前:读取json')
+    else:
+        g_object.main_top_is_read_json.config(text='当前:不读json')

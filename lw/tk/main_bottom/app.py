@@ -88,8 +88,12 @@ def set_window(action):
     my_windows = get_my_windows()
     my_windows = exclude_by_items(my_windows, exclude_path)
     window = get_mw_by_hwnd(my_windows, hwnd)
-    if len(window) != 1:
-        raise Exception(f'根据pid搜索，理应只找到一个，结果len={len(window)}，无法理解，程序退出。')
+    if len(window) == 0:
+        print("根据hwnd搜索，没有找到。")
+        return
+    if len(window) > 1:
+        print(f'根据pid搜索，理应只找到一个，结果len={len(window)}。')
+        return
     window = window[0]
     # 开始
     if action == "restore":
