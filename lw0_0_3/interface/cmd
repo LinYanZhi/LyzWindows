@@ -1,0 +1,19 @@
+pyuic5 -o window.py window2.ui
+pyrcc5 -o ico_rc.py C:\Users\LinYanZhi\Desktop\ico.qrc
+
+import lw0_0_3.interface.ico_rc
+
+pyinstaller D:\PyCharm_code\Lyz\LyzWindows\lw0_0_3\main.py -p xxx
+pyinstaller D:\PyCharm_code\Lyz\LyzWindows\lw0_0_3\__package\main.spec
+pyinstaller D:\PyCharm_code\Lyz\LyzWindows\lw0_0_3\__package\main.spec --windowed
+    hiddenimports=['yaml', 'psutil', 'win32con', 'win32gui', 'win32api', 'win32process', 'PyQt5', 'PyQt5.uic'],
+
+python D:\PyCharm_code\Lyz\LyzWindows\lw0_0_3\main.py
+
+
+pyinstaller D:\PyCharm_code\Lyz\LyzWindows\lw0_0_3\__package\main.spec
+pyinstaller D:\PyCharm_code\Lyz\LyzWindows\lw0_0_3\main.py --paths="D:\PyCharm_code\Lyz\LyzWindows" --hidden-import=yaml --hidden-import=psutil --hidden-import=win32con --hidden-import=win32gui --hidden-import=win32api --hidden-import=win32process --hidden-import=PyQt5
+pyinstaller D:\PyCharm_code\Lyz\LyzWindows\lw0_0_3\main.py -w --paths="D:\PyCharm_code\Lyz\LyzWindows" --hidden-import=yaml --hidden-import=psutil --hidden-import=win32con --hidden-import=win32gui --hidden-import=win32api --hidden-import=win32process --hidden-import=PyQt5
+
+
+

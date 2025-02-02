@@ -1,0 +1,14 @@
+tab1:
+  pin_to_top: true
+tab2:
+  big_small_center: true
+  big_small_px: 200
+  down: 20
+  height: 800
+  left: 100
+  right: 20
+  set_default_size_center: true
+  set_size_center: false
+  set_size_center2: false
+  up: 100
+  width: 520

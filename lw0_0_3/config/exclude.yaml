@@ -1,0 +1,39 @@
+#0:
+#  title:
+#  size:
+#  xy:
+#  process_path:
+1:
+  size: [0, 0]
+#2:
+#  xy: [0, 0]
+3:
+  title: Microsoft Text Input Application
+4:
+  title: Program Manager
+5:
+  title: ""
+  process_path: C:\Windows\explorer.exe
+6:
+  title: ""
+  process_path: C:\CloudMusic\cloudmusic.exe
+
+10:
+  title: InputTip.exe
+11:
+  title: PixPin
+12:
+  process_path: C:\Users\LinYanZhi\AppData\Local\Programs\EcoPaste\EcoPaste.exe
+13:
+  size: [18, 18]
+  xy: [0, 0]
+  process_path: C:\Windows\System32\cmd.exe
+14:
+  title: ""
+  process_path: D:\DingDing\main\current_new\DingTalk.exe
+15:
+  title: ""
+  process_path: C:\Windows\System32\cmd.exe
+16:
+  title: ""
+  process_path: D:\CloudMusic\cloudmusic.exe

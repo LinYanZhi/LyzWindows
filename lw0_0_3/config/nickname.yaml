@@ -1,0 +1,30 @@
+0:
+  process_path: D:\_\_exe\LyzWindow-tk-v0.0.3\lw3-window.exe
+  nick_name: 当前窗口
+1:
+  process_path: D:\PyCharm 2024.1\bin\pycharm64.exe
+  nick_name: PyCharm
+2:
+  process_path: C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe
+  nick_name: Edge浏览器
+3:
+  process_path: D:\Notepad++\notepad++.exe
+  nick_name: Notepad++记事本
+4:
+  process_path: C:\Windows\explorer.exe
+  nick_name: 文件资源管理器
+5:
+  process_path: D:\chatglm\智谱清言.exe
+  nick_name: 智谱清言
+6:
+  process_path: D:\Anaconda3\envs\lyz-window\python.exe
+  nick_name: this
+7:
+  process_path: D:\Anaconda3\envs\home\Lib\site-packages\qt5_applications\Qt\bin\designer.exe
+  nick_name: Qt 设计
+8:
+  process_path: D:\CloudMusic\cloudmusic.exe
+  nick_name: 网易云音乐
+9:
+  process_path: C:\Program Files\WindowsApps\Microsoft.WindowsTerminal_1.21.3231.0_x64__8wekyb3d8bbwe\WindowsTerminal.exe
+  nick_name: 终端

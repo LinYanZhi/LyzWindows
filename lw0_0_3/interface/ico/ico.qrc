@@ -1,0 +1,24 @@
+<RCC>
+  <qresource prefix="ico">
+    <file>夸克.ico</file>
+    <file>clion.ico</file>
+    <file>idea.ico</file>
+    <file>pycharm.ico</file>
+    <file>webstorm.ico</file>
+    <file>cloudmusic2.ico</file>
+    <file>chatglm.ico</file>
+    <file>cloudmusic.ico</file>
+    <file>edge.ico</file>
+    <file>wechat.ico</file>
+    <file>钉钉.ico</file>
+    <file>终端.ico</file>
+    <file>edge.ico</file>
+  </qresource>
+  <qresource prefix="png">
+    <file>查找.png</file>
+    <file>explorer.png</file>
+    <file>默认.png</file>
+    <file>屏幕.png</file>
+    <file>全屏.png</file>
+  </qresource>
+</RCC>
