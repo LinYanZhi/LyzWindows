@@ -1,30 +1,101 @@
-0:
+A0:
   process_path: D:\_\_exe\LyzWindow-tk-v0.0.3\lw3-window.exe
   nick_name: 当前窗口
-1:
+A1:
   process_path: D:\PyCharm 2024.1\bin\pycharm64.exe
   nick_name: PyCharm
-2:
+A2:
   process_path: C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe
   nick_name: Edge浏览器
-3:
+A3:
   process_path: D:\Notepad++\notepad++.exe
   nick_name: Notepad++记事本
-4:
+A4:
   process_path: C:\Windows\explorer.exe
   nick_name: 文件资源管理器
-5:
+A5:
   process_path: D:\chatglm\智谱清言.exe
   nick_name: 智谱清言
-6:
+A6:
   process_path: D:\Anaconda3\envs\lyz-window\python.exe
   nick_name: this
-7:
+A7:
   process_path: D:\Anaconda3\envs\home\Lib\site-packages\qt5_applications\Qt\bin\designer.exe
   nick_name: Qt 设计
-8:
+A8:
   process_path: D:\CloudMusic\cloudmusic.exe
   nick_name: 网易云音乐
-9:
-  process_path: C:\Program Files\WindowsApps\Microsoft.WindowsTerminal_1.21.3231.0_x64__8wekyb3d8bbwe\WindowsTerminal.exe
+A9:
+  process_path: "...WindowsTerminal.exe" # C:\Program Files\WindowsApps\Microsoft.WindowsTerminal_1.21.3231.0_x64__8wekyb3d8bbwe\WindowsTerminal.exe
   nick_name: 终端
+A10:
+  process_path: D:\Tencent\TIM\Bin\TIM.exe
+  nick_name: TIM
+A11:
+  process_path: D:\WeChat\WeChat.exe
+  nick_name: 微信
+A12:
+  process_path: D:\IntelliJ IDEA 2024.1\bin\idea64.exe
+  nick_name: IDEA
+A13:
+  process_path: C:\Program Files (x86)\Microsoft Office\root\Office16\WINWORD.EXE
+  nick_name: Word
+A14:
+  process_path: D:\免安装软件\Snipaste-2.7.3-Beta-x64\Snipaste.exe
+  nick_name: 贴图
+A15:
+  process_path: C:\Windows\System32\notepad.exe
+  nick_name: 记事本
+A16:
+  process_path: D:\Yuanbao\yuanbao.exe
+  nick_name: 腾讯元宝
+A17:
+  process_path: D:\WebStorm 2024.1\bin\webstorm64.exe
+  nick_name: WebStorm
+
+
+B1:
+  process_path: D:\_Code\Python 3.10.16\python.exe
+  nick_name: Python解释器
+B2:
+  process_path: D:\_Software\Notepad++\notepad++.exe
+  nick_name: Notepad++记事本
+B3:
+  process_path: D:\_Software\Microsoft VS Code\Code.exe
+  nick_name: VS Code
+B4:
+  process_path: D:\APP\Navicat_16\Navicat_16.0.6.0\navicat.exe
+  nick_name: Navicat
+B5:
+  process_path: C:\Program Files (x86)\DingDing\main\current\DingTalk.exe
+  nick_name: 钉钉
+B6:
+  process_path: D:\_Software\ideaIC-2024.1\bin\idea64.exe
+  nick_name: IDEA-IC
+B7:
+  process_path: D:\_Software\Google\Chrome\Application\chrome.exe
+  nick_name: Chrome浏览器
+B8:
+  process_path: D:\_Software\Tabby\Tabby.exe
+  nick_name: CMD
+B9:
+  process_path: D:\_Software\pycharm-community-2024.1.win\bin\pycharm64.exe
+  nick_name: PyCharm
+B10:
+  process_path: C:\Program Files\TortoiseGit\bin\TortoiseGitProc.exe
+  nick_name: Git小乌龟
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

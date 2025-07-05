@@ -1,4 +1,7 @@
 # 务必要导入
+import threading
+import time
+
 import pyautogui
 
 w, h = pyautogui.size()
@@ -8,7 +11,7 @@ print(f"screen: {w}x{h}")
 import os
 import sys
 
-sys.path.append(r'D:\PyCharm_code\Lyz\LyzWindows')
+sys.path.append(r'D:\JetBrainsCode\PyCharm_code\Lyz\LyzWindows')
 print("this:", sys.argv[0])
 path = os.path.join(os.path.dirname(sys.argv[0]), "path.txt")
 print("path:", path)
@@ -39,6 +42,16 @@ if __name__ == '__main__':
 
     mainWindow.setCentralWidget(tabWidget)  # 将QTabWidget设置为QMainWindow的中心组件
     mainWindow.resize(tabWidget.size())  # 设置窗口大小
+    # mainWindow.setFixedSize(tabWidget.size())
     mainWindow.move(525, 166)
     mainWindow.show()  # 执行QMainWindow的show()方法，显示这个QMainWindow
+
+    # 获取窗口的宽高和位置
+    # 多线程
+    # def fn():
+    #     while True:
+    #         print("window:", mainWindow.size(), mainWindow.pos())
+    #         time.sleep(1)
+    # thread = threading.Thread(target=fn)
+    # thread.start()
     sys.exit(app.exec())  # 使用exit()或者点击关闭按钮退出QApplication

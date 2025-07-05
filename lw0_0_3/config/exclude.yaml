@@ -18,22 +18,43 @@
   title: ""
   process_path: C:\CloudMusic\cloudmusic.exe
 
-10:
+A1:
   title: InputTip.exe
-11:
+A2:
   title: PixPin
-12:
+A3:
   process_path: C:\Users\LinYanZhi\AppData\Local\Programs\EcoPaste\EcoPaste.exe
-13:
+A4:
   size: [18, 18]
   xy: [0, 0]
   process_path: C:\Windows\System32\cmd.exe
-14:
+A5:
   title: ""
-  process_path: D:\DingDing\main\current_new\DingTalk.exe
-15:
+  process_path: D:\Office\DingDing\main\current_new\DingTalk.exe
+A6:
   title: ""
   process_path: C:\Windows\System32\cmd.exe
-16:
+A7:
   title: ""
   process_path: D:\CloudMusic\cloudmusic.exe
+A8:
+  title: ""
+  process_path: D:\DingDing\main\current\DingTalk.exe
+A9:
+  title: com.tencent.yuanbao-siw
+  process_path: D:\Yuanbao\yuanbao.exe
+  size: [18, 18]
+A10:
+  title: ""
+  process_path: D:\Yuanbao\yuanbao.exe
+A11:
+  title: dummyLayeredWnd
+  process_path: D:\BaiduNetdisk\BaiduNetdisk.exe
+  size: [10, 10]
+
+B1:
+  title: ""
+  process_path: C:\Users\p641485\软件\ideaIC-2024.1\bin\idea64.exe
+B2:
+  title: ""
+  process_path: C:\Program Files (x86)\DingDing\main\current\DingTalk.exe

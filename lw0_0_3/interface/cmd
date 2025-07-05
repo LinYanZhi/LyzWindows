@@ -1,4 +1,4 @@
-pyuic5 -o window.py window2.ui
+pyuic5 -o window.py window.ui
 pyrcc5 -o ico_rc.py C:\Users\LinYanZhi\Desktop\ico.qrc
 
 import lw0_0_3.interface.ico_rc

@@ -101,7 +101,7 @@ class Size:
 
         self.ui.button_size_max.clicked.connect(lambda: fn('1938x1098'))
         self.ui.button_size_screen.clicked.connect(lambda: fn('1920x1080'))
-        self.ui.button_size_jetbrains.clicked.connect(lambda: fn('1770x1000'))
+        self.ui.button_size_jetbrains.clicked.connect(lambda: fn('1750x1030'))
         self.ui.button_size_chatglm.clicked.connect(lambda: fn('1663x938'))
         self.ui.button_size_default.clicked.connect(lambda: fn('1550x980'))
         self.ui.button_size_dingding.clicked.connect(lambda: fn('1410x809'))

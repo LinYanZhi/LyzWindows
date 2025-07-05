@@ -1,0 +1,13 @@
+{
+    "width": 288,
+    "height": 292,
+    "x": 1023,
+    "y": 412,
+    "bg_color": "#1e1f22",
+    "border_color": "#2b2d30",
+    "corner_color": "lightgreen",
+    "is_topmost": true,
+    "topmost_border_color": "#444447",
+    "menu_bg_color": "white",
+    "menu_fg_color": "black"
+}

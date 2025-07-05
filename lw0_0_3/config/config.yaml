@@ -2,13 +2,18 @@ tab1:
   pin_to_top: true
 tab2:
   big_small_center: true
-  big_small_px: 200
+  big_small_px: 50
   down: 20
-  height: 800
-  left: 100
+  height: 995
+  left: 60
   right: 20
   set_default_size_center: true
-  set_size_center: false
+  set_size_center: true
   set_size_center2: false
-  up: 100
+  up: 40
+  width: 1800
+window:
+  height: 800
   width: 520
+  x: 100
+  y: 20
