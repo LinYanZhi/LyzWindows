@@ -60,9 +60,14 @@ lw
 第六版 v0.0.6 <br> 
 时隔许久，完全懒得折腾了。一个文件搞定，暂告一段落。<br>
 lw.py<br>
-和<br>
-lw.bat调用之<br>
+...<br>
+和 lw.bat <br>
+```cmd
+*/python.exe */lw.py
+```
 没有python环境的毁灭吧<br>
+把python.exe的路径写好 然后把.bat脚本加到环境变量路径下 直接启动<br>
+![Snipaste_2025-07-05_16-28-00.png](Snipaste_2025-07-05_16-28-00.png)
 不想折腾了<br>
 <hr>
 
