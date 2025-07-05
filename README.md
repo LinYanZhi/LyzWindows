@@ -67,7 +67,9 @@ lw.py<br>
 ```
 没有python环境的毁灭吧<br>
 把python.exe的路径写好 然后把.bat脚本加到环境变量路径下 直接启动<br>
+<br>
 ![Snipaste_2025-07-05_16-28-00.png](Snipaste_2025-07-05_16-28-00.png)
+<hr>
 不想折腾了<br>
 <hr>
 
