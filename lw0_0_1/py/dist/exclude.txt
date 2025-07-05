@@ -1,6 +1,0 @@
-# 行首是'#'视为注释
-# 每行是一个排除项
-Program Manager
-Microsoft Text Input Application
-InputTip.exe
-com.ayangweb.EcoPaste-siw
