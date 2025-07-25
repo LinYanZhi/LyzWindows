@@ -1,0 +1,11 @@
+error:
+    WNDPROC return value cannot be converted to LRESULT
+    TypeError: WPARAM is simple, so must be an int object (got NoneType)
+
+解决：
+    \Lib\site-packages\win10toast\__init__.py
+
+    row:144     on_destroy()
+    row:156     return
+
+    return None -> return 0
