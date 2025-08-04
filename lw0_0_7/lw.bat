@@ -1,0 +1,1 @@
+C:\Users\Administrator\Env\Anaconda3\envs\home\python.exe "C:\Users\Administrator\Documents\Notepad++_txt\_bat\lw.py"
