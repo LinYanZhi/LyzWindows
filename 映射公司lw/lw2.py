@@ -1,280 +1,365 @@
-import win32gui
 import win32api
-import win32con
+import win32gui
 import win32process
 import psutil
-import time
+import re
 
-# pip install win32gui win32api win32con win32process psutil
+from typing import List
 
-# 缩放比例步长
-SCALE_STEP = 0.1
 
-# 持续时间
-DURATION = 0.1  # 越短越平滑 但是次数多了会有卡顿
-# 次数
-STEPS = 10  # 次数越多越平滑 但是慢
+# 定义路径通配符和对应标题的映射
+PATH_PATTERN_ALIAS = {
+    # 电脑上自带的软件
+    r'.*WindowsTerminal.exe': "CMD",
+    r'.*explorer.exe': "文件资源管理器",
+    r'.*msedge.exe': "Edge",
 
-# 封装一个窗口控制类
-class WindowControl:
-    # 基本属性
-    handle = None
-    left = 0
-    top = 0
-    width = 0
-    height = 0
-    title = ''
-    pid = 0
-    exe_path = ''
+    # 我的必装软件
+    r'.*notepad\+\+\.exe': "Notepad++",
 
-    def __init__(self, handle):
+    # Jet Brains 软件
+    r'.*datagrip64.exe': "DataGrip",
+    r'.*pycharm64.exe': "PyCharm",
+    r'.*idea64.exe': "IDEA",
+    r'.*webstorm64.exe': "WebStorm",
+    r'.*phpstorm64.exe': "PHPStorm",
+
+    # 其他软件
+    r'.*Trae\ CN.exe': "TraeCN",
+    r'.*DingTalk.exe': "钉钉",
+    r'.*ShadowBot\.Shell\.exe': "影刀",
+}
+
+
+def get_my_title_by_path(path: str) -> str:
+    """
+    根据传入的路径和预定义的通配符规则，返回对应的自定义标题。
+
+    :param path: 待匹配的文件路径
+    :return: 匹配到的自定义标题，如果没有匹配则返回空字符串
+    """
+    for pattern, alias in PATH_PATTERN_ALIAS.items():
+        if re.match(pattern, path):
+            # print("alias = ", alias)
+            return alias
+    return "?" 
+
+
+
+# 这是一个窗口类
+class Window:
+    """最关键的两个属性：句柄and进程id"""
+    handle: int  # 句柄
+    pid: int  # 进程id
+
+    """其他属性"""
+    title: str  # 标题
+    position: tuple  # 位置
+    size: tuple  # 大小
+    launch_path: str  # 启动路径
+
+    """自定义属性"""
+    # 我给起的标题
+    my_title: str = ""
+
+
+    def __init__(self, handle: int):
         self.handle = handle
-
-    # 自赋值
-    def __auto_assign(self):
-        self.left, self.top, self.right, self.bottom = win32gui.GetWindowRect(self.handle)
-        self.width = self.right - self.left
-        self.height = self.bottom - self.top
-        self.title = win32gui.GetWindowText(self.handle)
-        self.pid = win32process.GetWindowThreadProcessId(self.handle)[1]
+        # 根据句柄获取窗口标题
+        self.title = win32gui.GetWindowText(handle)
+        # 根据句柄获取窗口位置
+        self.position = win32gui.GetWindowRect(handle)
+        # 根据句柄获取窗口大小
+        left, top, right, bottom = win32gui.GetWindowRect(handle)
+        self.size = (right - left, bottom - top)
+        # 初始化pid和启动路径
+        self.pid = None
+        self.launch_path = None
+        
         try:
-            process = psutil.Process(self.pid)
-            self.exe_path = process.exe()
-        except (psutil.NoSuchProcess, psutil.AccessDenied, psutil.ZombieProcess):
-            self.exe_path = None
+            # 获取窗口所属进程的PID
+            thread_id, pid = win32process.GetWindowThreadProcessId(handle)
+            self.pid = pid
+            
+            # 尝试方法1: 使用psutil获取进程路径
+            try:
+                process = psutil.Process(pid)
+                self.launch_path = process.exe()
+            except (psutil.NoSuchProcess, psutil.AccessDenied, psutil.ZombieProcess):
+                # 方法1失败，尝试方法2: 使用win32api和psapi获取进程路径
+                try:
+                    import ctypes
+                    from ctypes import wintypes
+                    
+                    psapi = ctypes.WinDLL('psapi')
+                    kernel32 = ctypes.WinDLL('kernel32')
+                    
+                    # 打开进程
+                    PROCESS_QUERY_INFORMATION = 0x0400
+                    PROCESS_VM_READ = 0x0010
+                    h_process = kernel32.OpenProcess(
+                        PROCESS_QUERY_INFORMATION | PROCESS_VM_READ,
+                        False,
+                        pid
+                    )
+                    
+                    if h_process:
+                        # 获取进程路径
+                        path_buf = ctypes.create_string_buffer(1024)
+                        if psapi.GetModuleFileNameExA(h_process, None, path_buf, ctypes.sizeof(path_buf)):
+                            self.launch_path = path_buf.value.decode('utf-8')
+                        kernel32.CloseHandle(h_process)
+                except Exception:
+                    # 所有方法都失败，保留launch_path为None
+                    pass
+            
+            # 如果成功获取到路径，则设置自定义标题
+            if self.launch_path:
+                self.my_title = get_my_title_by_path(self.launch_path)
+            else:
+                self.my_title = "??"
+        except Exception as e:
+            # 记录异常信息但不中断程序
+            print(f"获取窗口信息时出错: {e}")
+
+            pass
         return
-
-    # (坐标)移动该窗口
-    def __move(self, left: int, top: int):
-        self.__auto_assign()
-        win32gui.MoveWindow(self.handle, int(left), int(top), self.width, self.height, True)
-
-    # (坐标)丝滑移动该窗口
-    def __move_silky(self, target=None, target_left=None, target_top=None, duration=DURATION, steps=STEPS):
-        """
-        丝滑移动窗口到目标位置
         
-        参数:
-        target: 位置关键词，如'center', 'left_top'等
-        target_left: 目标位置的左坐标(如果提供了target则忽略)
-        target_top: 目标位置的上坐标(如果提供了target则忽略)
-        duration: 移动持续时间(秒)
-        steps: 移动步数
-        """
-        
-        # 如果提供了target参数，则计算目标坐标
-        if target:
-            screen_size = get_screen_size()
-            if target == 'center':
-                target_left = (screen_size[0] - self.width) // 2
-                target_top = (screen_size[1] - self.height) // 2
-            elif target == 'left_top':
-                target_left = 0
-                target_top = 0
-            elif target == 'right_top':
-                target_left = screen_size[0] - self.width
-                target_top = 0
-            elif target == 'left_bottom':
-                target_left = 0
-                target_top = screen_size[1] - self.height
-            elif target == 'right_bottom':
-                target_left = screen_size[0] - self.width
-                target_top = screen_size[1] - self.height
-            elif target == 'left_center':
-                target_left = 0
-                target_top = (screen_size[1] - self.height) // 2
-            elif target == 'right_center':
-                target_left = screen_size[0] - self.width
-                target_top = (screen_size[1] - self.height) // 2
-            elif target == 'top_center':
-                target_left = (screen_size[0] - self.width) // 2
-                target_top = 0
-            elif target == 'bottom_center':
-                target_left = (screen_size[0] - self.width) // 2
-                target_top = screen_size[1] - self.height
-        
-        # 确保目标坐标有效
-        if target_left is None or target_top is None:
-            raise ValueError("必须提供target或target_left和target_top参数")
-        
-        # 计算每一步需要移动的距离
-        step_left = (target_left - self.left) / steps
-        step_top = (target_top - self.top) / steps
-        
-        # 计算每一步的时间间隔
-        step_time = duration / steps
-        
-        # 逐步移动窗口
-        original_left, original_top = self.left, self.top
-        for i in range(steps):
-            new_left = original_left + step_left * (i + 1)
-            new_top = original_top + step_top * (i + 1)
-            self.__move(new_left, new_top)
-            time.sleep(step_time)
-        
-        # 确保最终位置准确
-        self.__move(target_left, target_top)
-
-    # 移动窗口到... 获取坐标(left, top)
-    def _get_target_xy(self, key: str = '', model='center'):
-        # 获取当前电脑屏幕大小
-        screen_size = get_screen_size()
-
-        # 移动窗口到屏幕左上角
-        if key == '7' or model == 'left_top':
-            return 0, 0
-        # 移动窗口到屏幕上半部分
-        elif key == '8' or model == 'top_center':
-            return (screen_size[0] - self.width) // 2, 0
-         # 移动窗口到屏幕右上角
-        elif key == '9' or model == 'right_top':
-            return screen_size[0] - self.width, 0
-
-        # 移动窗口到屏幕左半部分
-        elif key == '4' or model == 'left_center':
-            return 0, (screen_size[1] - self.height) // 2
-        # 移动窗口到屏幕中心
-        if key == '5' or model == 'center':
-            return (screen_size[0] - self.width) // 2, (screen_size[1] - self.height) // 2
-        # 移动窗口到屏幕右半部分
-        elif key == '6' or model == 'right_center':
-            return screen_size[0] - self.width, (screen_size[1] - self.height) // 2
-
-        # 移动窗口到屏幕左下角
-        elif key == '1' or model == 'left_bottom':
-            return 0, screen_size[1] - self.height
-        # 移动窗口到屏幕下半部分
-        elif key == '2' or model == 'bottom_center':
-            return (screen_size[0] - self.width) // 2, screen_size[1] - self.height
-        # 移动窗口到屏幕右下角
-        elif key == '3' or model == 'right_bottom':
-            return screen_size[0] - self.width, screen_size[1] - self.height
-
-        # 移动到左对齐
-        elif key == 'left':
-            return 0, self.top
-        # 移动到右对齐
-        elif key == 'right':
-            return screen_size[0] - self.width, self.top
-        # 移动到上对齐
-        elif key == 'top':
-            return self.left, 0
-        # 移动到下对齐
-        elif key == 'bottom':
-            return self.left, screen_size[1] - self.height
-
-        else:
-            return self.left, self.top
-
-    # ============================ 移动窗口位置 ============================
-
-    # 移动
-    def move(self, key: str = '', model='center'):
-        left, top = self._get_target_xy(key, model)
-        self.__move(left, top)
-
-    # 丝滑移动
-    def move_silky(self, key: str = '', model='center'):
-        left, top = self.__get_target_xy(key, model)
-        self.__move_silky(target_left=left, target_top=top)
-
-    # ============================ 改变窗口大小 ============================
-    
-    # (坐标)改变该窗口的大小：变大后窗口的正中心不变
-    def __resize(self, width: int, height: int):
-        self.__auto_assign()
-        # win32gui.MoveWindow(self.handle, self.left, self.top, width, height, True)
-        # 原本的窗口正中心
-        center_x = self.left + self.width // 2
-        center_y = self.top + self.height // 2
-        # 计算新的窗口位置
-        new_left = center_x - width // 2
-        new_top = center_y - height // 2
-        # 改变窗口大小
-        win32gui.SetWindowPos(self.handle, None, new_left, new_top, width, height, win32con.SWP_NOZORDER)
-
-    # 以窗口正中心为基准 改变窗口大小：改变创建之后，窗口的正中心位置不变
-    def __resize_center(self, scale_factor = SCALE_STEP):
-        left, top, right, bottom = win32gui.GetWindowRect(self.handle)
-        width = right - left
-        height = bottom - top
-        new_width = int(width * (1 + scale_factor))
-        new_height = int(height * (1 + scale_factor))
-
-        # 获取屏幕分辨率
-        screen_width = win32api.GetSystemMetrics(0)
-        screen_height = win32api.GetSystemMetrics(1)
-
-        # 确保窗口不会超出屏幕边界
-        new_width = min(new_width, screen_width)
-        new_height = min(new_height, screen_height)
-
-        # 重新计算窗口位置以保持居中
-        new_left = (screen_width - new_width) // 2
-        new_top = (screen_height - new_height) // 2
-
-        win32gui.SetWindowPos(self.handle, None, new_left, new_top, new_width, new_height, win32con.SWP_NOZORDER)
-
-    # 丝滑改变窗口大小 拆分成多个步骤 窗口变大后 窗口正中心位置不变
-    def resize_silky(self, scale_factor = SCALE_STEP, duration=DURATION, steps=STEPS):
-        # 获取当前窗口大小
-        left, top, right, bottom = win32gui.GetWindowRect(self.handle)
-        width = right - left
-        height = bottom - top
-        # 计算新的窗口大小
-        new_width = int(width * (1 + scale_factor))
-        new_height = int(height * (1 + scale_factor))
-        # 计算每一步需要改变的大小
-        step_width = (new_width - width) / steps
-        step_height = (new_height - height) / steps
-        # 计算每一步的时间间隔
-        step_time = duration / steps
-        # 逐步改变窗口大小
-        for i in range(steps):
-            width += step_width
-            height += step_height
-            self.__resize(int(width), int(height))
-            time.sleep(step_time)
-        # 确保最终大小准确
-        self.__resize(new_width, new_height)
-
-    # 窗口变大
-    def window_big(self, scale_factor = SCALE_STEP):
-        self.resize_silky(scale_factor)
-    
-    # 窗口变小
-    def window_small(self, scale_factor = SCALE_STEP):
-        self.resize_silky(-scale_factor)
-
     pass
 
 
-# 获取当前激活的窗口：
-def get_active_window():
-    return win32gui.GetForegroundWindow()
+# 这是一个核心类
+class Core:
+    # 获取显示器的分辨率
+    @staticmethod
+    def get_screen_size() -> tuple:
+        return win32api.GetSystemMetrics(0), win32api.GetSystemMetrics(1)
+    
+    # 获取当前电脑的所有窗口 包装数据到Window中 返回List[Window]
+    @staticmethod
+    def get_all_windows(include_invisible=False, include_child_windows=False, filter_no_title=True) -> List[Window]:
+        windows = []
+        
+        # 定义一个回调函数 用于枚举窗口
+        def enum_window_callback(hwnd, lParam):
+            # 根据参数决定是否包含不可见窗口
+            if include_invisible or win32gui.IsWindowVisible(hwnd):
+                windows.append(Window(hwnd))
+                
+            # 如果需要包含子窗口，递归枚举
+            if include_child_windows:
+                win32gui.EnumChildWindows(hwnd, enum_window_callback, None)
+        
+        # 枚举所有顶级窗口
+        win32gui.EnumWindows(enum_window_callback, None)
+        
+        # 根据参数决定是否过滤没有标题的窗口
+        if filter_no_title:
+            windows = [window for window in windows if window.title]
+        
+        # 过滤掉没有位置的窗口（位置为(0,0,0,0)通常是无效窗口）
+        windows = [window for window in windows if window.position != (0, 0, 0, 0)]
+        
+        return windows
+
+def print_help():
+    """显示帮助信息"""
+    print("窗口管理工具使用帮助")
+    print("====================")
+    print("可用命令:")
+    print("  window list [选项]    - 列出所有窗口")
+    print("    选项:")
+    print("      -t, --title       - 显示窗口标题")
+    print("      -mt, --my-title   - 显示自定义标题")
+    print("      -pid, --process-id - 显示进程ID")
+    print("      -exe, --path      - 显示启动路径")
+    print("      -wh, --size       - 显示窗口大小")
+    print("      -xy, --position   - 显示窗口位置")
+    print("  window info <pid>     - 显示指定PID的窗口详细信息")
+    print("  window use <pid>      - 使用指定PID的窗口（预留功能）")
+    print("  help                  - 显示此帮助信息")
+    print("  exit, quit            - 退出程序")
+    print("\n示例:")
+    print("  window list                     # 列出所有窗口的基本信息")
+    print("  window list --title --my-title  # 显示标题和自定义标题")
+    print("  window list -pid -exe           # 显示PID和启动路径")
+    print("  window info 1234                # 显示PID为1234的窗口详细信息")
 
 
-# 获取当前电脑尺寸(如果电脑有缩放比 则获取实际的宽高px)
-def get_screen_size():
-    return win32api.GetSystemMetrics(0), win32api.GetSystemMetrics(1)
+def parse_command(command):
+    """解析命令行参数"""
+    parts = command.strip().lower().split()
+    if not parts:
+        return [], []
+    
+    main_cmd = parts[0]
+    args = parts[1:]
+    
+    return main_cmd, args
 
 
 if __name__ == '__main__':
-    # 获取到当前电脑屏幕大小
-    screen_size = get_screen_size()
-    print(f'当前电脑屏幕大小为：{screen_size}')
+    print("窗口管理终端模式启动成功！")
+    print("输入 'help' 获取帮助信息。")
+    
+    while True:
+        try:
+            command = input("\nSystem: ").strip()
+            
+            if command in ['exit', 'quit']:
+                print("程序已退出。")
+                break
+            
+            if command == 'help':
+                print_help()
+                continue
+            
+            main_cmd, args = parse_command(command)
+            
+            # 获取所有窗口
+            windows = Core.get_all_windows()
+            
+            if main_cmd == 'window' and args and args[0] == 'list':
+                # 处理 window list 命令
+                show_title = False
+                show_my_title = False
+                show_pid = False
+                show_path = False
+                show_size = False
+                show_position = False
+                
+                # 如果没有指定任何选项，默认显示标题和PID
+                if len(args) == 1:
+                    show_title = True
+                    show_pid = True
+                
+                # 解析选项
+                for arg in args[1:]:
+                    if arg in ['-t', '--title']:
+                        show_title = True
+                    elif arg in ['-mt', '--my-title']:
+                        show_my_title = True
+                    elif arg in ['-pid', '--process-id']:
+                        show_pid = True
+                    elif arg in ['-exe', '--path']:
+                        show_path = True
+                    elif arg in ['-wh', '--size']:
+                        show_size = True
+                    elif arg in ['-xy', '--position']:
+                        show_position = True
+                    elif arg in ['-handle', '--handle']:
+                        show_handle = True
 
-    time.sleep(1)
-    # 获取当前激活窗口
-    window = get_active_window()
-    # 实例化窗口控制类
-    window_control = WindowControl(window)
+                    else:
+                        print(f"未知选项: {arg}")
+                        print("使用 'window list --help' 查看帮助")
+                        break
+                else:
+                    # 没有break，继续执行
+                    print(f"共找到 {len(windows)} 个窗口:")
+                    idx_width = len(str(len(windows)))
+                    handle_max_width = max(len(str(window.handle)) for window in windows)
+                    pid_max_width = max(len(str(window.pid)) for window in windows)
 
+                    for idx, window in enumerate(windows, 1):
+                        line = f"{idx:{idx_width}}. "
+
+                        parts = []
+                        if show_pid:
+                            parts.append(f"PID: {window.pid:{pid_max_width}}")
+                        if show_handle:
+                            parts.append(f"句柄: {window.handle:{handle_max_width}}")
+                        if show_title:
+                            parts.append(f"标题: {window.title}")
+                        if show_my_title:
+                            parts.append(f"自定义标题: {window.my_title}")
+                        if show_path:
+                            path = window.launch_path if window.launch_path else '无法获取'
+                            parts.append(f"路径: {path}")
+                        if show_size:
+                            parts.append(f"大小: {window.size}")
+                        if show_position:
+                            parts.append(f"位置: {window.position}")
+                        
+                        print(line + " | ".join(parts))
+            
+            elif main_cmd == 'window' and args and args[0] == 'info' and len(args) > 1:
+                # 处理 window info <pid> 命令
+                try:
+                    pid = int(args[1])
+                    target_windows = [w for w in windows if w.pid == pid]
+                    
+                    if not target_windows:
+                        print(f"未找到PID为 {pid} 的窗口。")
+                    else:
+                        print(f"找到 {len(target_windows)} 个PID为 {pid} 的窗口:")
+                        for window in target_windows:
+                            print("窗口信息:")
+                            print(f"  句柄: {window.handle}")
+                            print(f"  PID: {window.pid}")
+                            print(f"  标题: {window.title}")
+                            print(f"  自定义标题: {window.my_title}")
+                            print(f"  位置: {window.position}")
+                            print(f"  大小: {window.size}")
+                            print(f"  启动路径: {window.launch_path if window.launch_path else '无法获取'}")
+                            print("----------------" * 5)
+                except ValueError:
+                    print("无效的PID格式。请使用 'window info <数字>' 格式。")
+            
+            elif main_cmd == 'window' and args and args[0] == 'use' and len(args) > 1:
+                # 处理 window use <pid> 命令（预留功能）
+                try:
+                    pid = int(args[1])
+                    target_windows = [w for w in windows if w.pid == pid]
+                    
+                    if not target_windows:
+                        print(f"未找到PID为 {pid} 的窗口。")
+                    else:
+                        print(f"准备使用PID为 {pid} 的窗口...")
+                        print("注意: 此功能尚未实现。")
+                        # 这里可以添加窗口操作的代码
+                except ValueError:
+                    print("无效的PID格式。请使用 'window use <数字>' 格式。")
+                # 处理 window info <pid> 命令
+                try:
+                    pid = int(args[1])
+                    target_windows = [w for w in windows if w.pid == pid]
+                    
+                    if not target_windows:
+                        print(f"未找到PID为 {pid} 的窗口。")
+                    else:
+                        print(f"找到 {len(target_windows)} 个PID为 {pid} 的窗口:")
+                        for window in target_windows:
+                            print("窗口信息:")
+                            print(f"  句柄: {window.handle}")
+                            print(f"  PID: {window.pid}")
+                            print(f"  标题: {window.title}")
+                            print(f"  自定义标题: {window.my_title}")
+                            print(f"  位置: {window.position}")
+                            print(f"  大小: {window.size}")
+                            print(f"  启动路径: {window.launch_path if window.launch_path else '无法获取'}")
+                            print("----------------" * 5)
+                except ValueError:
+                    print("无效的PID格式。请使用 'window info <数字>' 格式。")
+            
+            else:
+                print("未知命令。输入 'help' 获取帮助信息。")
+        
+        except KeyboardInterrupt:
+            print("\n程序已中断。")
+            break
+        except Exception as e:
+            print(f"执行命令时出错: {e}")
     
 
-    
+
+# 命令行规范设计说明
+# 1. 采用层级式命令结构，主命令为 'window'
+# 2. 支持多种子命令和选项，提供灵活的窗口信息查询方式
+# 3. 选项可以组合使用，如 'window list -t -mt -pid'
+# 4. 所有命令和选项支持简写和全写两种形式
+# 5. 'window use' 命令为预留功能，可用于后续扩展窗口操作功能
 
 
 
-    
 
